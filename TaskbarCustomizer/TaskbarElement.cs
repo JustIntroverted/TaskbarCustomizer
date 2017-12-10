@@ -23,8 +23,11 @@ namespace TaskbarCustomizer {
             get { return getRectangle().Bottom - getRectangle().Top; }
         }
 
-        public TaskbarElement(string ClassName) {
-            this.Handle = Utility.FindWindow(ClassName, null);
+        public TaskbarElement(string ClassName) : this(ClassName, null) {
+        }
+
+        public TaskbarElement(string ClassName, string WindowTitle) {
+            this.Handle = Utility.FindWindow(ClassName, WindowTitle);
         }
 
         public TaskbarElement(TaskbarElement Parent, string ClassName, int ElementIndex) {
@@ -33,11 +36,15 @@ namespace TaskbarCustomizer {
         }
 
         public void ResizeElement(int width) {
-            Utility.SetWindowPos(this.Handle, 0, 0, 0, width, this.Height, Utility.SWP_NOMOVE);
+            Utility.SetWindowPos(this.Handle, 0, 0, 0, width, this.Height, Utility.SWP_NOMOVE | Utility.SWP_NOACTIVATE);
         }
 
         public void MoveElement(int x) {
-            Utility.SetWindowPos(this.Handle, 0, x, 0, 0, 0, Utility.SWP_NOSIZE);
+            MoveElement(x, 0);
+        }
+
+        public void MoveElement(int x, int y) {
+            Utility.SetWindowPos(this.Handle, 0, x, y, 0, 0, Utility.SWP_NOSIZE | Utility.SWP_NOACTIVATE);
         }
 
         public bool IsElementVisible() {

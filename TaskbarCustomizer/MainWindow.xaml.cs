@@ -25,6 +25,7 @@ namespace TaskbarCustomizer {
 
         private TaskbarElement _taskbar;
         private TaskbarElement _startButton;
+        private TaskbarElement _startMenu;
         private TaskbarElement _cortanaButton;
         private TaskbarElement _mainAppContainer;
         private TaskbarElement _trayIconContainer;
@@ -53,6 +54,7 @@ namespace TaskbarCustomizer {
             // grab the handles of everything we'll be tweaking
             _taskbar = new TaskbarElement("Shell_TrayWnd");
             _startButton = new TaskbarElement(_taskbar, "Start", 1);
+            _startMenu = new TaskbarElement("Windows.UI.Core.CoreWindow", "Start");
             _cortanaButton = new TaskbarElement(_taskbar, "TrayButton", 1);
             _mainAppContainer = new TaskbarElement(_taskbar, "ReBarWindow32", 1);
             _trayIconContainer = new TaskbarElement(_taskbar, "TrayNotifyWnd", 1);
@@ -103,6 +105,9 @@ namespace TaskbarCustomizer {
             if (_cortanaButton.IsElementVisible())
                 _cortanaButton.MoveElement((int)_dummyTaskbar.Left + offset - _cortanaButton.Width);
 
+            // move the start menu into the correct position
+            _startMenu.MoveElement((int)_dummyTaskbar.Left, (int)_dummyTaskbar.Height);
+
             // move the tray icon container into position
             _trayIconContainer.MoveElement((int)_dummyTaskbar.Left + (int)_dummyTaskbar.Width - _trayIconContainer.Width);
         }
@@ -144,6 +149,7 @@ namespace TaskbarCustomizer {
             // return things back to normal
             _startButton.ShowElement();
             _startButton.MoveElement(0);
+            _startMenu.MoveElement(0);
             _cortanaButton.ShowElement();
             _cortanaButton.MoveElement(offset - _cortanaButton.Width);
             _showDesktopButton.ShowElement();
