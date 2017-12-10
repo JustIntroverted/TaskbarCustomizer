@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace TaskbarCustomizer.Helper {
+namespace TaskbarCustomizer.Helpers {
+    /****************
+     *
+     *  todo: clean this all up
+     *
+     ****************/
 
     public class Utility {
 
@@ -74,6 +79,9 @@ namespace TaskbarCustomizer.Helper {
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool IsWindowVisible(IntPtr hWnd);
 
+        [DllImport("user32.dll")]
+        public static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
+
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT {
             public int Left;        // x position of upper-left corner
@@ -90,6 +98,37 @@ namespace TaskbarCustomizer.Helper {
             public ABE uEdge;
             public RECT rc;
             public int lParam;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct WindowCompositionAttributeData {
+            public WindowCompositionAttribute Attribute;
+            public IntPtr Data;
+            public int SizeOfData;
+        }
+
+        public enum WindowCompositionAttribute {
+
+            // ...
+            WCA_ACCENT_POLICY = 19
+
+            // ...
+        }
+
+        public enum AccentState {
+            ACCENT_DISABLED = 0,
+            ACCENT_ENABLE_GRADIENT = 1,
+            ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
+            ACCENT_ENABLE_BLURBEHIND = 3,
+            ACCENT_INVALID_STATE = 4
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct AccentPolicy {
+            public AccentState AccentState;
+            public int AccentFlags;
+            public int GradientColor;
+            public int AnimationId;
         }
 
         public static IntPtr FindWindowByIndex(IntPtr hWndParent, string className, int index) {

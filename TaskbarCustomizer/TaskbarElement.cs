@@ -1,11 +1,12 @@
 ﻿using System;
-using TaskbarCustomizer.Helper;
+using TaskbarCustomizer.Helpers;
 
 namespace TaskbarCustomizer {
 
     public class TaskbarElement {
         private string ClassName = string.Empty;
         public IntPtr Handle { get; private set; }
+        public Utility.AccentPolicy AccentPolicy = new Utility.AccentPolicy();
 
         public int Top {
             get { return getRectangle().Top; }
@@ -29,6 +30,22 @@ namespace TaskbarCustomizer {
         public TaskbarElement(TaskbarElement Parent, string ClassName, int ElementIndex) {
             this.ClassName = ClassName;
             this.Handle = Utility.FindWindowByIndex(Parent.Handle, this.ClassName, ElementIndex);
+        }
+
+        public void ApplyAccentPolicy() {
+            int size = System.Runtime.InteropServices.Marshal.SizeOf(this.AccentPolicy);
+            IntPtr ptr = System.Runtime.InteropServices.Marshal.AllocHGlobal(size);
+            System.Runtime.InteropServices.Marshal.StructureToPtr(this.AccentPolicy, ptr, false);
+
+            Utility.WindowCompositionAttributeData data = new Utility.WindowCompositionAttributeData() {
+                Attribute = Utility.WindowCompositionAttribute.WCA_ACCENT_POLICY,
+                Data = ptr,
+                SizeOfData = size
+            };
+
+            Utility.SetWindowCompositionAttribute(this.Handle, ref data);
+
+            System.Runtime.InteropServices.Marshal.FreeHGlobal(ptr);
         }
 
         public void ResizeElement(int width) {

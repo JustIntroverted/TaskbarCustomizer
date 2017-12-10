@@ -14,8 +14,10 @@ namespace TaskbarCustomizer {
         private TaskbarElement _taskbar;
         private TaskbarElement _startButton;
         private TaskbarElement _startMenu;
-        private TaskbarElement _networkMenu;
+
+        //private TaskbarElement _networkMenu;
         private TaskbarElement _cortanaButton;
+
         private TaskbarElement _cortanaSearchMenu;
         private TaskbarElement _mainAppContainer;
         private TaskbarElement _trayIconContainer;
@@ -45,7 +47,7 @@ namespace TaskbarCustomizer {
             _taskbar = new TaskbarElement("Shell_TrayWnd");
             _startButton = new TaskbarElement(_taskbar, "Start", 1);
             _startMenu = new TaskbarElement("Windows.UI.Core.CoreWindow", "Start");
-            _networkMenu = new TaskbarElement("ATL:00007FFB4860D230", "Network Flyout");
+            //_networkMenu = new TaskbarElement("ATL:00007FFB4860D230", "Network Flyout");
             _cortanaButton = new TaskbarElement(_taskbar, "TrayButton", 1);
             _cortanaSearchMenu = new TaskbarElement("Windows.UI.Core.CoreWindow", "Cortana");
             _mainAppContainer = new TaskbarElement(_taskbar, "ReBarWindow32", 1);
@@ -65,8 +67,9 @@ namespace TaskbarCustomizer {
             _dummyTaskbar.Top = _taskbar.Top;
             _dummyTaskbar.Left = (_taskbar.Width / 2) - _dummyTaskbar.Width / 2;
             _dummyTaskbar.AllowsTransparency = true;
-            _dummyTaskbar.Background = new SolidColorBrush(Color.FromArgb(190, 0, 0, 0));
+            _dummyTaskbar.Background = new SolidColorBrush(Color.FromArgb((byte)sliderTaskOpacity.Value, 0, 0, 0));
             _dummyTaskbar.ShowInTaskbar = false;
+            _dummyTaskbar.Hide();
 
             // create an instance of a timer with the interval set
             _timer = new DispatcherTimer();
@@ -75,6 +78,10 @@ namespace TaskbarCustomizer {
         }
 
         private void _timer_Tick(object sender, EventArgs e) {
+            // make taskbar transparent
+            _taskbar.AccentPolicy.AccentState = Helpers.Utility.AccentState.ACCENT_INVALID_STATE;
+            _taskbar.ApplyAccentPolicy();
+
             // make sure the dummy taskbar maintains position
             _dummyTaskbar.Top = _taskbar.Top;
             _dummyTaskbar.Width = _taskBarWidth;
@@ -100,7 +107,7 @@ namespace TaskbarCustomizer {
             // move the start menu into the correct position
             _startMenu.MoveElement((int)_dummyTaskbar.Left, (int)_dummyTaskbar.Height);
             _cortanaSearchMenu.MoveElement((int)_dummyTaskbar.Left, (int)_dummyTaskbar.Height);
-            _networkMenu.MoveElement((int)_dummyTaskbar.Left + (int)_dummyTaskbar.Width - _networkMenu.Width, (int)_dummyTaskbar.Height);
+            //_networkMenu.MoveElement((int)_dummyTaskbar.Left + (int)_dummyTaskbar.Width - _networkMenu.Width, (int)_dummyTaskbar.Height);
 
             // move the tray icon container into position
             _trayIconContainer.MoveElement((int)_dummyTaskbar.Left + (int)_dummyTaskbar.Width - _trayIconContainer.Width);
@@ -137,6 +144,10 @@ namespace TaskbarCustomizer {
 
             _timer.Stop();
 
+            // fix the taskbar
+            _taskbar.AccentPolicy.AccentState = Helpers.Utility.AccentState.ACCENT_DISABLED;
+            _taskbar.ApplyAccentPolicy();
+
             if (_dummyTaskbar != null)
                 _dummyTaskbar.Close();
 
@@ -162,6 +173,8 @@ namespace TaskbarCustomizer {
         private void Window_StateChanged(object sender, EventArgs e) {
             if (this.WindowState == WindowState.Minimized) {
                 this.Hide();
+
+                return;
             }
         }
     }
