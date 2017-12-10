@@ -1,18 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace TaskbarCustomizer {
@@ -26,7 +14,9 @@ namespace TaskbarCustomizer {
         private TaskbarElement _taskbar;
         private TaskbarElement _startButton;
         private TaskbarElement _startMenu;
+        private TaskbarElement _networkMenu;
         private TaskbarElement _cortanaButton;
+        private TaskbarElement _cortanaSearchMenu;
         private TaskbarElement _mainAppContainer;
         private TaskbarElement _trayIconContainer;
         private TaskbarElement _showDesktopButton;
@@ -55,7 +45,9 @@ namespace TaskbarCustomizer {
             _taskbar = new TaskbarElement("Shell_TrayWnd");
             _startButton = new TaskbarElement(_taskbar, "Start", 1);
             _startMenu = new TaskbarElement("Windows.UI.Core.CoreWindow", "Start");
+            _networkMenu = new TaskbarElement("ATL:00007FFB4860D230", "Network Flyout");
             _cortanaButton = new TaskbarElement(_taskbar, "TrayButton", 1);
+            _cortanaSearchMenu = new TaskbarElement("Windows.UI.Core.CoreWindow", "Cortana");
             _mainAppContainer = new TaskbarElement(_taskbar, "ReBarWindow32", 1);
             _trayIconContainer = new TaskbarElement(_taskbar, "TrayNotifyWnd", 1);
             _showDesktopButton = new TaskbarElement(_trayIconContainer, "TrayShowDesktopButtonWClass", 1);
@@ -107,6 +99,8 @@ namespace TaskbarCustomizer {
 
             // move the start menu into the correct position
             _startMenu.MoveElement((int)_dummyTaskbar.Left, (int)_dummyTaskbar.Height);
+            _cortanaSearchMenu.MoveElement((int)_dummyTaskbar.Left, (int)_dummyTaskbar.Height);
+            _networkMenu.MoveElement((int)_dummyTaskbar.Left + (int)_dummyTaskbar.Width - _networkMenu.Width, (int)_dummyTaskbar.Height);
 
             // move the tray icon container into position
             _trayIconContainer.MoveElement((int)_dummyTaskbar.Left + (int)_dummyTaskbar.Width - _trayIconContainer.Width);
