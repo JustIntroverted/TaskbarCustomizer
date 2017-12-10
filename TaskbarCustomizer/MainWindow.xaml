@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TaskbarCustomizer"
         mc:Ignorable="d"
-        Title="TaskbarCustomizer Settings" Height="350" Width="525" WindowState="Normal" WindowStyle="SingleBorderWindow" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closing="Window_Closing">
+        Title="TaskbarCustomizer Settings" Height="350" Width="525" WindowState="Normal" WindowStyle="SingleBorderWindow" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closing="Window_Closing" StateChanged="Window_StateChanged">
     <Grid>
         <Frame Content="Show/Hide Elements" HorizontalAlignment="Left" Height="101" Margin="10,81,0,0" VerticalAlignment="Top" Width="156" />
         <CheckBox x:Name="chkHideStart" Content="Hide Start" HorizontalAlignment="Left" Margin="21,101,0,0" VerticalAlignment="Top" Height="17" Width="145" Checked="chkHideStart_Checked" Unchecked="chkHideStart_Unchecked" />

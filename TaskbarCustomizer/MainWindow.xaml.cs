@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace TaskbarCustomizer {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+        private System.Windows.Forms.NotifyIcon _trayIcon;
+
         private TaskbarElement _taskbar;
         private TaskbarElement _startButton;
         private TaskbarElement _cortanaButton;
@@ -35,6 +38,17 @@ namespace TaskbarCustomizer {
 
         public MainWindow() {
             InitializeComponent();
+
+            // set up the tray icon
+            _trayIcon = new System.Windows.Forms.NotifyIcon();
+            _trayIcon.Icon = new System.Drawing.Icon("Resources\\icon.ico");
+            _trayIcon.Text = this.Title;
+            _trayIcon.Visible = true;
+            _trayIcon.DoubleClick +=
+                delegate (object sender, EventArgs args) {
+                    this.Show();
+                    this.WindowState = WindowState.Normal;
+                };
 
             // grab the handles of everything we'll be tweaking
             _taskbar = new TaskbarElement("Shell_TrayWnd");
@@ -136,10 +150,19 @@ namespace TaskbarCustomizer {
             _mainAppContainer.MoveElement(offset);
             _mainAppContainer.ResizeElement(_taskbar.Width - _trayIconContainer.Width - offset);
             _trayIconContainer.MoveElement(_taskbar.Width - _trayIconContainer.Width);
+
+            // get rid of the system tray icon
+            _trayIcon.Dispose();
         }
 
         private void sliderTaskOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
             _dummyTaskbar.Background = new SolidColorBrush(Color.FromArgb((byte)sliderTaskOpacity.Value, 0, 0, 0));
+        }
+
+        private void Window_StateChanged(object sender, EventArgs e) {
+            if (this.WindowState == WindowState.Minimized) {
+                this.Hide();
+            }
         }
     }
 }
