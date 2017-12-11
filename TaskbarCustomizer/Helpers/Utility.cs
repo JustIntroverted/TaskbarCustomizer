@@ -92,13 +92,17 @@ namespace TaskbarCustomizer.Helpers {
         [DllImport("user32.dll")]
         public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
 
+        public const uint EVENT_MIN = 0x00000001;
+        public const uint EVENT_MAX = 0x7FFFFFFF;
         public const uint WINEVENT_OUTOFCONTEXT = 0;
         public const uint WINEVENT_SKIPOWNPROCESS = 0x0002;
         public const uint EVENT_OBJECT_LOCATIONCHANGE = 0x800B;
+
         public const uint WM_DWMCOLORIZATIONCOLORCHANGED = 0x0320;
         public const uint WM_WINDOWPOSCHANGED = 0x47;
         public const uint WM_PAINT = 0x000F;
         public const uint WM_CHANGEUISTATE = 0x127;
+        public const uint WM_STYLECHANGED = 0x007D;
 
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT {

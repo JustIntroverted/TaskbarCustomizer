@@ -11,7 +11,7 @@
         <CheckBox x:Name="chkHideStart" Content="Hide Start" HorizontalAlignment="Left" Margin="21,101,0,0" VerticalAlignment="Top" Height="17" Width="145" Checked="chkHideStart_Checked" Unchecked="chkHideStart_Unchecked" />
         <CheckBox x:Name="chkHideShowDesk" Content="Hide Show Desktop" HorizontalAlignment="Left" Margin="21,117,0,0" VerticalAlignment="Top" Height="17" Width="145" Checked="chkHideShowDesk_Checked" Unchecked="chkHideShowDesk_Unchecked" />
         <Label Content="Taskbar Width:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" />
-        <Slider x:Name="sliderTaskWidth" HorizontalAlignment="Left" Minimum="600" Maximum="800" Width="200" Margin="103,16,0,0" VerticalAlignment="Top" />
+        <Slider x:Name="sliderTaskWidth" HorizontalAlignment="Left" Minimum="600" Maximum="800" Width="200" Margin="103,16,0,0" VerticalAlignment="Top" ValueChanged="sliderTaskWidth_ValueChanged" />
         <Label Content="Taskbar Opacity:" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top" />
         <Slider x:Name="sliderTaskOpacity" HorizontalAlignment="Left" Minimum="0" Maximum="255" Width="200" Margin="103,42,0,0" VerticalAlignment="Top" ValueChanged="sliderTaskOpacity_ValueChanged" />
     </Grid>
