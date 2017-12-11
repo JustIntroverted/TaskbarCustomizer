@@ -9,6 +9,8 @@ namespace TaskbarCustomizer.Helpers {
      ****************/
 
     public class Utility {
+        public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType,
+            IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
         public enum ABM : uint {
             New = 0x00000000,
@@ -81,6 +83,22 @@ namespace TaskbarCustomizer.Helpers {
 
         [DllImport("user32.dll")]
         public static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr
+            hmodWinEventProc, WinEventDelegate lpfnWinEventProc, uint idProcess,
+            uint idThread, uint dwFlags);
+
+        [DllImport("user32.dll")]
+        public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
+
+        public const uint WINEVENT_OUTOFCONTEXT = 0;
+        public const uint WINEVENT_SKIPOWNPROCESS = 0x0002;
+        public const uint EVENT_OBJECT_LOCATIONCHANGE = 0x800B;
+        public const uint WM_DWMCOLORIZATIONCOLORCHANGED = 0x0320;
+        public const uint WM_WINDOWPOSCHANGED = 0x47;
+        public const uint WM_PAINT = 0x000F;
+        public const uint WM_CHANGEUISTATE = 0x127;
 
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT {
