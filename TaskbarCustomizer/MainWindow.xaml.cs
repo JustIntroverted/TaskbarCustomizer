@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Interop;
@@ -12,6 +13,8 @@ namespace TaskbarCustomizer {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+        private bool _running = false;
+        private BackgroundWorker _bgWorker;
         private System.Windows.Forms.NotifyIcon _trayIcon;
 
         private TaskbarElement _taskbar;
@@ -26,9 +29,6 @@ namespace TaskbarCustomizer {
         private Window _dummyTaskbar;
 
         private int _taskBarWidth => (int)sliderTaskWidth.Value;
-
-        private IntPtr _winHook;
-        private Utility.WinEventDelegate procDelegate;
 
         public MainWindow() {
             InitializeComponent();
@@ -71,35 +71,39 @@ namespace TaskbarCustomizer {
             _dummyTaskbar.ShowInTaskbar = false;
             _dummyTaskbar.Hide();
 
-            // create wineventhook
-            procDelegate = new Utility.WinEventDelegate(WinEventProc);
+            // set up background worker
+            _bgWorker = new BackgroundWorker {
+                WorkerSupportsCancellation = true
+            };
+
+            _bgWorker.DoWork += _bgWorker_DoWork;
         }
 
-        private void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime) {
-            if (eventType == 0x0008 || eventType == 0x0009 || eventType == 0x0005 || eventType == 0x0003 || eventType == 0x0010 || eventType == 0x0011 || eventType == 0x8005) {
-                applyStyle();
-                System.Threading.Thread.Sleep(80);
+        private void _bgWorker_DoWork(object sender, DoWorkEventArgs e) {
+            while (_running) {
+                Dispatcher.Invoke(() => {
+                    applyStyle();
+                });
+
+                System.Threading.Thread.Sleep(100);
             }
 
-            Debug.WriteLine(eventType);
-        }
-
-        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) {
-            if (msg == Utility.WM_DWMCOLORIZATIONCOLORCHANGED) {
-                System.Threading.Thread.Sleep(10);
-
-                // make taskbar transparent
-                _taskbar.AccentPolicy.AccentState = Helpers.Utility.AccentState.ACCENT_INVALID_STATE;
-                _taskbar.ApplyAccentPolicy();
-            }
-
-            return IntPtr.Zero;
+            Dispatcher.Invoke(() => {
+                resetStyle();
+            });
         }
 
         private void applyStyle() {
             // make taskbar transparent
-            _taskbar.AccentPolicy.AccentState = Helpers.Utility.AccentState.ACCENT_INVALID_STATE;
-            _taskbar.ApplyAccentPolicy();
+            if (chkTaskbarVisible.IsChecked == true) {
+                // show the taskbar
+                _taskbar.AccentPolicy.AccentState = Utility.AccentState.ACCENT_DISABLED;
+                _taskbar.ApplyAccentPolicy();
+            } else {
+                // hide the taskbar
+                _taskbar.AccentPolicy.AccentState = Utility.AccentState.ACCENT_INVALID_STATE;
+                _taskbar.ApplyAccentPolicy();
+            }
 
             // make sure the dummy taskbar maintains position
             _dummyTaskbar.Top = _taskbar.Top;
@@ -126,12 +130,36 @@ namespace TaskbarCustomizer {
             // move the start menu into the correct position
             _startMenu.MoveElement((int)_dummyTaskbar.Left, (int)_dummyTaskbar.Height);
             _cortanaSearchMenu.MoveElement((int)_dummyTaskbar.Left, (int)_dummyTaskbar.Height);
-            //_networkMenu.MoveElement((int)_dummyTaskbar.Left + (int)_dummyTaskbar.Width - _networkMenu.Width, (int)_dummyTaskbar.Height);
 
             // move the tray icon container into position
             _trayIconContainer.MoveElement((int)_dummyTaskbar.Left + (int)_dummyTaskbar.Width - _trayIconContainer.Width);
+        }
 
-            //System.Threading.Thread.Sleep(10);
+        private void resetStyle() {
+            // get the offsets of buttons that may or may not be visible
+            int offset = (_startButton.IsElementVisible() ? _startButton.Width : 0) +
+                         (_cortanaButton.IsElementVisible() ? _cortanaButton.Width : 0);
+
+            // fix the taskbar opacity
+            _taskbar.AccentPolicy.AccentState = Utility.AccentState.ACCENT_DISABLED;
+            _taskbar.ApplyAccentPolicy();
+
+            // return things back to normal
+            _startButton.ShowElement();
+            _startButton.MoveElement(0);
+
+            _startMenu.MoveElement(0);
+
+            if (_cortanaButton.IsElementVisible())
+                _cortanaButton.MoveElement(offset - _cortanaButton.Width);
+
+            _showDesktopButton.ShowElement();
+            _mainAppContainer.MoveElement(offset);
+            _mainAppContainer.ResizeElement(_taskbar.Width - _trayIconContainer.Width - offset);
+            _trayIconContainer.MoveElement(_taskbar.Width - _trayIconContainer.Width);
+
+            // get rid of the system tray icon
+            _trayIcon.Dispose();
         }
 
         private void chkHideStart_Checked(object sender, RoutedEventArgs e) {
@@ -151,51 +179,20 @@ namespace TaskbarCustomizer {
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e) {
-            _dummyTaskbar.Show();
+            _dummyTaskbar?.Show();
 
             this.Focus();
-
-            applyStyle();
-
-            IntPtr mainWindowPtr = new WindowInteropHelper(this).Handle;
-            HwndSource mainWindowSrc = HwndSource.FromHwnd(mainWindowPtr);
-            mainWindowSrc.AddHook(WndProc);
-
-            _winHook = Utility.SetWinEventHook(Utility.EVENT_MIN, Utility.EVENT_MAX, IntPtr.Zero, procDelegate, 0, 0, Utility.WINEVENT_OUTOFCONTEXT);
-
-            sliderTaskWidth.Value = sliderTaskWidth.Maximum - (sliderTaskWidth.Maximum / 2);
-            sliderTaskOpacity.Value = sliderTaskOpacity.Maximum / 2;
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
-            // get the offsets of buttons that may or may not be visible
-            int offset = (_startButton.IsElementVisible() ? _startButton.Width : 0) +
-                         (_cortanaButton.IsElementVisible() ? _cortanaButton.Width : 0);
+        private void Window_Closing(object sender, CancelEventArgs e) {
+            // stop the background worker
+            _running = false;
 
-            Utility.UnhookWinEvent(_winHook);
-
-            // fix the taskbar
-            _taskbar.AccentPolicy.AccentState = Helpers.Utility.AccentState.ACCENT_DISABLED;
-            _taskbar.ApplyAccentPolicy();
-
+            // kill the dummy taskbar
             if (_dummyTaskbar != null)
                 _dummyTaskbar.Close();
 
-            // return things back to normal
-            _startButton.ShowElement();
-            _startButton.MoveElement(0);
-            _startMenu.MoveElement(0);
-
-            if (_cortanaButton.IsElementVisible())
-                _cortanaButton.MoveElement(offset - _cortanaButton.Width);
-
-            _showDesktopButton.ShowElement();
-            _mainAppContainer.MoveElement(offset);
-            _mainAppContainer.ResizeElement(_taskbar.Width - _trayIconContainer.Width - offset);
-            _trayIconContainer.MoveElement(_taskbar.Width - _trayIconContainer.Width);
-
-            // get rid of the system tray icon
-            _trayIcon.Dispose();
+            resetStyle();
         }
 
         private void sliderTaskOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
@@ -203,7 +200,7 @@ namespace TaskbarCustomizer {
         }
 
         private void sliderTaskWidth_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            if (this.Visibility == Visibility.Visible)
+            if (_dummyTaskbar?.Visibility == Visibility.Visible)
                 applyStyle();
         }
 
@@ -212,6 +209,35 @@ namespace TaskbarCustomizer {
                 this.Hide();
 
                 return;
+            }
+        }
+
+        private void btnStart_Click(object sender, RoutedEventArgs e) {
+            if (!_bgWorker.IsBusy) {
+                _running = true;
+                _bgWorker.RunWorkerAsync();
+            }
+
+            btnStart.Visibility = Visibility.Hidden;
+            btnStop.Visibility = Visibility.Visible;
+        }
+
+        private void btnStop_Click(object sender, RoutedEventArgs e) {
+            _running = false;
+
+            btnStart.Visibility = Visibility.Visible;
+            btnStop.Visibility = Visibility.Hidden;
+        }
+
+        private void chkTaskbarVisible_Click(object sender, RoutedEventArgs e) {
+            if (chkTaskbarVisible.IsChecked == true) {
+                // show the taskbar
+                _taskbar.AccentPolicy.AccentState = Utility.AccentState.ACCENT_DISABLED;
+                _taskbar.ApplyAccentPolicy();
+            } else {
+                //    // hide the taskbar
+                _taskbar.AccentPolicy.AccentState = Utility.AccentState.ACCENT_INVALID_STATE;
+                _taskbar.ApplyAccentPolicy();
             }
         }
     }
