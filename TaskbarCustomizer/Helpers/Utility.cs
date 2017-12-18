@@ -2,11 +2,6 @@
 using System.Runtime.InteropServices;
 
 namespace TaskbarCustomizer.Helpers {
-    /****************
-     *
-     *  todo: clean this all up
-     *
-     ****************/
 
     public class Utility {
         public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType,

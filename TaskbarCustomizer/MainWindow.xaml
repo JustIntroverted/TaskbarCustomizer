@@ -7,16 +7,16 @@
         mc:Ignorable="d"
         Title="TaskbarCustomizer Settings" Height="350" Width="525" WindowState="Normal" WindowStyle="SingleBorderWindow" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closing="Window_Closing" StateChanged="Window_StateChanged">
     <Grid>
+        <Label Content="Show/Hide Elements" FontWeight="Bold" FontSize="16" HorizontalAlignment="Left" Margin="8,72,0,0" VerticalAlignment="Top" />
         <Label Content="Dummy Taskbar Settings" FontWeight="Bold" FontSize="16" HorizontalAlignment="Left" Margin="8,-2,0,0" VerticalAlignment="Top" />
         <Label Content="Width:" HorizontalAlignment="Left" Margin="21,19,0,0" VerticalAlignment="Top" />
-        <Slider x:Name="sliderTaskWidth" HorizontalAlignment="Left" Minimum="600" Maximum="800" Width="200" Margin="78,25,0,0" VerticalAlignment="Top" ValueChanged="sliderTaskWidth_ValueChanged" />
+        <Slider x:Name="SliderTaskWidth" HorizontalAlignment="Left" Minimum="600" Maximum="800" Width="200" Margin="78,25,0,0" VerticalAlignment="Top" ValueChanged="SliderTaskWidth_ValueChanged" />
         <Label Content="Opacity:" HorizontalAlignment="Left" Margin="21,40,0,0" VerticalAlignment="Top" />
-        <Slider x:Name="sliderTaskOpacity" HorizontalAlignment="Left" Minimum="0" Maximum="255" Width="200" Margin="78,46,0,0" VerticalAlignment="Top" ValueChanged="sliderTaskOpacity_ValueChanged" />
-        <CheckBox x:Name="chkTaskbarVisible" Content="Show Taskbar" HorizontalAlignment="Left" Margin="26,97,0,0" VerticalAlignment="Top" Click="chkTaskbarVisible_Click" />
-        <Label Content="Show/Hide Elements" FontWeight="Bold" FontSize="16" HorizontalAlignment="Left" Margin="8,72,0,0" VerticalAlignment="Top" />
-        <CheckBox x:Name="chkHideStart" Content="Hide Start" HorizontalAlignment="Left" Margin="26,113,0,0" VerticalAlignment="Top" Height="17" Width="145" Checked="chkHideStart_Checked" Unchecked="chkHideStart_Unchecked" />
-        <CheckBox x:Name="chkHideShowDesk" Content="Hide Show Desktop" HorizontalAlignment="Left" Margin="26,129,0,0" VerticalAlignment="Top" Height="17" Width="145" Checked="chkHideShowDesk_Checked" Unchecked="chkHideShowDesk_Unchecked" />
-        <Button x:Name="btnStart" Content="Start" Margin="434,276,10,10" Click="btnStart_Click" />
-        <Button x:Name="btnStop" Content="Stop" Margin="434,276,10,10" Visibility="Hidden" Click="btnStop_Click" />
+        <Slider x:Name="SliderTaskOpacity" HorizontalAlignment="Left" Minimum="0" Maximum="255" Width="200" Margin="78,46,0,0" VerticalAlignment="Top" ValueChanged="SliderTaskOpacity_ValueChanged" />
+        <CheckBox x:Name="ChkTaskbarVisible" Content="Show Taskbar" HorizontalAlignment="Left" Margin="26,97,0,0" VerticalAlignment="Top" Click="ChkTaskbarVisible_Click" />
+        <CheckBox x:Name="ChkHideStart" Content="Hide Start" HorizontalAlignment="Left" Margin="26,113,0,0" VerticalAlignment="Top" Height="17" Width="145" Checked="ChkHideStart_Checked" Unchecked="ChkHideStart_Unchecked" />
+        <CheckBox x:Name="ChkHideShowDesk" Content="Hide Show Desktop" HorizontalAlignment="Left" Margin="26,129,0,0" VerticalAlignment="Top" Height="17" Width="145" Checked="ChkHideShowDesk_Checked" Unchecked="ChkHideShowDesk_Unchecked" />
+        <Button x:Name="BtnStart" Content="Start" Margin="434,276,10,10" Click="BtnStart_Click" />
+        <Button x:Name="BtnStop" Content="Stop" Margin="434,276,10,10" Visibility="Hidden" Click="BtnStop_Click" />
     </Grid>
 </Window>
