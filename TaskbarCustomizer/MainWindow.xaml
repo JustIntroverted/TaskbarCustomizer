@@ -13,10 +13,13 @@
         <Slider x:Name="SliderTaskWidth" HorizontalAlignment="Left" Minimum="600" Maximum="800" Width="200" Margin="78,25,0,0" VerticalAlignment="Top" ValueChanged="SliderTaskWidth_ValueChanged" />
         <Label Content="Opacity:" HorizontalAlignment="Left" Margin="21,40,0,0" VerticalAlignment="Top" />
         <Slider x:Name="SliderTaskOpacity" HorizontalAlignment="Left" Minimum="0" Maximum="255" Width="200" Margin="78,46,0,0" VerticalAlignment="Top" ValueChanged="SliderTaskOpacity_ValueChanged" />
-        <CheckBox x:Name="ChkTaskbarVisible" Content="Show Taskbar" HorizontalAlignment="Left" Margin="26,97,0,0" VerticalAlignment="Top" Click="ChkTaskbarVisible_Click" />
-        <CheckBox x:Name="ChkHideStart" Content="Hide Start" HorizontalAlignment="Left" Margin="26,113,0,0" VerticalAlignment="Top" Height="17" Width="145" Checked="ChkHideStart_Checked" Unchecked="ChkHideStart_Unchecked" />
-        <CheckBox x:Name="ChkHideShowDesk" Content="Hide Show Desktop" HorizontalAlignment="Left" Margin="26,129,0,0" VerticalAlignment="Top" Height="17" Width="145" Checked="ChkHideShowDesk_Checked" Unchecked="ChkHideShowDesk_Unchecked" />
-        <Button x:Name="BtnStart" Content="Start" Margin="434,276,10,10" Click="BtnStart_Click" />
-        <Button x:Name="BtnStop" Content="Stop" Margin="434,276,10,10" Visibility="Hidden" Click="BtnStop_Click" />
+        <CheckBox x:Name="CheckTaskbarVisible" Content="Show Taskbar" HorizontalAlignment="Left" Margin="26,97,0,0" VerticalAlignment="Top" Click="CheckTaskbarVisible_Click" />
+        <CheckBox x:Name="CheckHideStart" Content="Hide Start" HorizontalAlignment="Left" Margin="26,113,0,0" VerticalAlignment="Top" Height="17" Width="145" Checked="CheckHideStart_Checked" Unchecked="CheckHideStart_Unchecked" />
+        <CheckBox x:Name="CheckHideShowDesk" Content="Hide Show Desktop" HorizontalAlignment="Left" Margin="26,129,0,0" VerticalAlignment="Top" Height="17" Width="145" Checked="CheckHideShowDesk_Checked" Unchecked="CheckHideShowDesk_Unchecked" />
+        <Button x:Name="ButtonStart" Content="Start" Margin="434,276,10,10" Click="ButtonStart_Click" />
+        <Button x:Name="ButtonStop" Content="Stop" Margin="434,276,10,10" Visibility="Hidden" Click="ButtonStop_Click" />
+        <Label Content="Other" FontWeight="Bold" FontSize="16" Margin="8,155,445,0" Height="31" VerticalAlignment="Top" />
+        <CheckBox x:Name="CheckAutoStart" Content="Auto Start" Margin="26,180,348,0" VerticalAlignment="Top" Height="17" />
+        <CheckBox x:Name="CheckLaunchWithWindows" Content="Launch With Windows" Margin="26,196,348,0" Height="17" VerticalAlignment="Top" Checked="CheckLaunchWithWindows_Checked" Unchecked="CheckLaunchWithWindows_Unchecked" />
     </Grid>
 </Window>

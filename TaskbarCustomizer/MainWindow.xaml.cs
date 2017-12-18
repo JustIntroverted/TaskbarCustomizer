@@ -111,19 +111,31 @@ namespace TaskbarCustomizer {
 
             setting = new Setting {
                 SettingName = "showtaskbar",
-                SettingValue = ChkTaskbarVisible.IsChecked.ToString()
+                SettingValue = CheckTaskbarVisible.IsChecked.ToString()
             };
             _settings.AddSetting(setting);
 
             setting = new Setting {
                 SettingName = "hidestartbutton",
-                SettingValue = ChkHideStart.IsChecked.ToString()
+                SettingValue = CheckHideStart.IsChecked.ToString()
             };
             _settings.AddSetting(setting);
 
             setting = new Setting {
                 SettingName = "hideshowdesktopbutton",
-                SettingValue = ChkHideShowDesk.IsChecked.ToString()
+                SettingValue = CheckHideShowDesk.IsChecked.ToString()
+            };
+            _settings.AddSetting(setting);
+
+            setting = new Setting {
+                SettingName = "autostart",
+                SettingValue = CheckAutoStart.IsChecked.ToString()
+            };
+            _settings.AddSetting(setting);
+
+            setting = new Setting {
+                SettingName = "launchwithwindows",
+                SettingValue = CheckLaunchWithWindows.IsChecked.ToString()
             };
             _settings.AddSetting(setting);
 
@@ -132,9 +144,9 @@ namespace TaskbarCustomizer {
 
         private void ApplyStyle() {
             // make taskbar transparent
-            if (ChkTaskbarVisible.IsChecked == true) {
+            if (CheckTaskbarVisible.IsChecked == true) {
                 // show the taskbar
-                _taskbar.AccentPolicy.AccentState = Utility.AccentState.ACCENT_ENABLE_TRANSPARENTGRADIENT;
+                _taskbar.AccentPolicy.AccentState = Utility.AccentState.ACCENT_DISABLED;
                 _taskbar.ApplyAccentPolicy();
             } else {
                 // hide the taskbar
@@ -161,7 +173,7 @@ namespace TaskbarCustomizer {
                 _startButton.MoveElement((int)_dummyTaskbar.Left);
 
             // show or hide the show desktopbutton
-            if (ChkHideShowDesk.IsChecked == true)
+            if (CheckHideShowDesk.IsChecked == true)
                 _showDesktopButton.HideElement();
             else
                 _showDesktopButton.ShowElement();
@@ -226,16 +238,23 @@ namespace TaskbarCustomizer {
             } else {
                 _settings.LoadSettings();
 
+                //TODO (justin): add some error checking here
                 SliderTaskWidth.Value = Convert.ToInt16(_settings.FindSetting("width").SettingValue);
                 SliderTaskOpacity.Value = Convert.ToByte(_settings.FindSetting("opacity").SettingValue);
-                ChkTaskbarVisible.IsChecked = Convert.ToBoolean(_settings.FindSetting("showtaskbar").SettingValue);
-                ChkHideStart.IsChecked = Convert.ToBoolean(_settings.FindSetting("hidestartbutton").SettingValue);
-                ChkHideShowDesk.IsChecked = Convert.ToBoolean(_settings.FindSetting("hideshowdesktopbutton").SettingValue);
+                CheckTaskbarVisible.IsChecked = Convert.ToBoolean(_settings.FindSetting("showtaskbar").SettingValue);
+                CheckHideStart.IsChecked = Convert.ToBoolean(_settings.FindSetting("hidestartbutton").SettingValue);
+                CheckHideShowDesk.IsChecked = Convert.ToBoolean(_settings.FindSetting("hideshowdesktopbutton").SettingValue);
+                CheckAutoStart.IsChecked = Convert.ToBoolean(_settings.FindSetting("autostart").SettingValue);
+                CheckLaunchWithWindows.IsChecked = Convert.ToBoolean(_settings.FindSetting("launchwithwindows").SettingValue);
+
+                _dummyTaskbar.Background = new SolidColorBrush(Color.FromArgb((byte)SliderTaskOpacity.Value, 0, 0, 0));
             }
 
             _dummyTaskbar?.Show();
 
             this.Focus();
+            if (CheckAutoStart.IsChecked == true)
+                ButtonStart_Click(null, null);
         }
 
         private void Window_StateChanged(object sender, EventArgs e) {
@@ -250,7 +269,25 @@ namespace TaskbarCustomizer {
             // stop the background worker
             _running = false;
 
+            _settings.UpdateSetting(new Setting("width", ((int)SliderTaskWidth.Value).ToString()));
+            _settings.UpdateSetting(new Setting("opacity", ((int)SliderTaskOpacity.Value).ToString()));
+            _settings.UpdateSetting(new Setting("showtaskbar", CheckTaskbarVisible.IsChecked.ToString()));
+            _settings.UpdateSetting(new Setting("hidestartbutton", CheckHideStart.IsChecked.ToString()));
+            _settings.UpdateSetting(new Setting("hideshowdesktopbutton", CheckHideShowDesk.IsChecked.ToString()));
+            _settings.UpdateSetting(new Setting("autostart", CheckAutoStart.IsChecked.ToString()));
+            _settings.UpdateSetting(new Setting("launchwithwindows", CheckLaunchWithWindows.IsChecked.ToString()));
+
             _settings.SaveSettings();
+
+            if (CheckLaunchWithWindows.IsChecked == true) {
+                using (Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true)) {
+                    key.SetValue("TaskbarCustomizer", "\"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\"");
+                }
+            } else {
+                using (Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true)) {
+                    key.DeleteValue("TaskbarCustomizer", false);
+                }
+            }
 
             // kill the dummy taskbar
             if (_dummyTaskbar != null)
@@ -263,29 +300,28 @@ namespace TaskbarCustomizer {
 
         #region control events
 
-        private void ChkHideStart_Checked(object sender, RoutedEventArgs e) {
+        private void CheckHideStart_Checked(object sender, RoutedEventArgs e) {
             if (_running)
                 _startButton.HideElement();
         }
 
-        private void ChkHideStart_Unchecked(object sender, RoutedEventArgs e) {
+        private void CheckHideStart_Unchecked(object sender, RoutedEventArgs e) {
             if (_running)
                 _startButton.ShowElement();
         }
 
-        private void ChkHideShowDesk_Checked(object sender, RoutedEventArgs e) {
+        private void CheckHideShowDesk_Checked(object sender, RoutedEventArgs e) {
             if (_running)
                 _showDesktopButton.HideElement();
         }
 
-        private void ChkHideShowDesk_Unchecked(object sender, RoutedEventArgs e) {
+        private void CheckHideShowDesk_Unchecked(object sender, RoutedEventArgs e) {
             if (_running)
                 _showDesktopButton.ShowElement();
         }
 
         private void SliderTaskOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            if (_running)
-                _dummyTaskbar.Background = new SolidColorBrush(Color.FromArgb((byte)SliderTaskOpacity.Value, 0, 0, 0));
+            _dummyTaskbar.Background = new SolidColorBrush(Color.FromArgb((byte)SliderTaskOpacity.Value, 0, 0, 0));
         }
 
         private void SliderTaskWidth_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
@@ -293,37 +329,49 @@ namespace TaskbarCustomizer {
                 ApplyStyle();
         }
 
-        private void ChkTaskbarVisible_Click(object sender, RoutedEventArgs e) {
+        private void CheckTaskbarVisible_Click(object sender, RoutedEventArgs e) {
             if (!_running) return;
 
-            if (ChkTaskbarVisible.IsChecked == true) {
+            if (CheckTaskbarVisible.IsChecked == true) {
                 // show the taskbar
                 _taskbar.AccentPolicy.AccentState = Utility.AccentState.ACCENT_DISABLED;
                 _taskbar.ApplyAccentPolicy();
             } else {
-                //    // hide the taskbar
+                // hide the taskbar
                 _taskbar.AccentPolicy.AccentState = Utility.AccentState.ACCENT_ENABLE_TRANSPARENTGRADIENT;
                 _taskbar.ApplyAccentPolicy();
             }
         }
 
-        private void BtnStart_Click(object sender, RoutedEventArgs e) {
+        private void ButtonStart_Click(object sender, RoutedEventArgs e) {
             if (!_bgWorker.IsBusy) {
                 _running = true;
                 _bgWorker.RunWorkerAsync();
             }
 
-            BtnStart.Visibility = Visibility.Hidden;
-            BtnStop.Visibility = Visibility.Visible;
+            ButtonStart.Visibility = Visibility.Hidden;
+            ButtonStop.Visibility = Visibility.Visible;
         }
 
-        private void BtnStop_Click(object sender, RoutedEventArgs e) {
+        private void ButtonStop_Click(object sender, RoutedEventArgs e) {
             _running = false;
 
-            BtnStart.Visibility = Visibility.Visible;
-            BtnStop.Visibility = Visibility.Hidden;
+            ButtonStart.Visibility = Visibility.Visible;
+            ButtonStop.Visibility = Visibility.Hidden;
         }
 
         #endregion control events
+
+        private void CheckLaunchWithWindows_Checked(object sender, RoutedEventArgs e) {
+            using (Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true)) {
+                key.SetValue("TaskbarCustomizer", "\"" + System.Reflection.Assembly.GetExecutingAssembly().Location + "\"");
+            }
+        }
+
+        private void CheckLaunchWithWindows_Unchecked(object sender, RoutedEventArgs e) {
+            using (Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true)) {
+                key.DeleteValue("TaskbarCustomizer", false);
+            }
+        }
     }
 }

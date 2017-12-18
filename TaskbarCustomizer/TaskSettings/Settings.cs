@@ -28,7 +28,7 @@ namespace TaskbarCustomizer.TaskSettings {
 
             using (StreamWriter sw = new StreamWriter("settings.txt")) {
                 foreach (Setting s in _settingsList) {
-                    sw.WriteLine("{0},{1}", s.SettingName, s.SettingValue);
+                    sw.WriteLine("{0}: {1}", s.SettingName.Trim(), s.SettingValue.Trim());
                 }
             }
         }
@@ -37,11 +37,11 @@ namespace TaskbarCustomizer.TaskSettings {
             if (File.Exists("settings.txt")) {
                 using (StreamReader sr = new StreamReader("settings.txt")) {
                     while (!sr.EndOfStream) {
-                        string[] temp = sr.ReadLine().Split(',');
+                        string[] temp = sr.ReadLine().Split(':');
 
                         Setting setting = new Setting {
-                            SettingName = temp[0],
-                            SettingValue = temp[1]
+                            SettingName = temp[0].Trim(),
+                            SettingValue = temp[1].Trim()
                         };
                         AddSetting(setting);
                     }
@@ -66,10 +66,9 @@ namespace TaskbarCustomizer.TaskSettings {
         }
 
         public void UpdateSetting(Setting Setting) {
-            Setting setting = FindSetting(Setting.SettingName);
+            int index = _settingsList.FindIndex(s => s.SettingName.ToLower() == Setting.SettingName.ToLower());
 
-            if (setting != null)
-                setting = Setting;
+            _settingsList[index] = Setting;
         }
 
         public Setting FindSetting(string SettingName) {
