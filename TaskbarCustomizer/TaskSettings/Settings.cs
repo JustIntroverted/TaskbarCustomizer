@@ -68,11 +68,13 @@ namespace TaskbarCustomizer.TaskSettings {
         public void UpdateSetting(Setting Setting) {
             int index = _settingsList.FindIndex(s => s.SettingName.ToLower() == Setting.SettingName.ToLower());
 
+            if (index == -1) return;
+
             _settingsList[index] = Setting;
         }
 
         public Setting FindSetting(string SettingName) {
-            return _settingsList.FirstOrDefault(s => s.SettingName.ToLower() == SettingName.ToLower());
+            return _settingsList.FirstOrDefault(s => s.SettingName.ToLower().Trim() == SettingName.ToLower().Trim());
         }
     }
 }

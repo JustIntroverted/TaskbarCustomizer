@@ -74,8 +74,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helpers\DebugLogger.cs" />
+    <Compile Include="Taskbars\Taskbar.cs" />
     <Compile Include="TaskSettings\Settings.cs" />
-    <Compile Include="TaskbarElement.cs" />
+    <Compile Include="Taskbars\Elements\TaskbarElement.cs" />
     <Compile Include="Helpers\Utility.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
