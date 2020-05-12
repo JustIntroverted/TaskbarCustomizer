@@ -2,44 +2,58 @@
 using System.IO;
 using System.Linq;
 
-namespace TaskbarCustomizer.TaskSettings {
+namespace TaskbarCustomizer.TaskSettings
+{
 
-    public class Setting {
+    public class Setting
+    {
         public string SettingName { get; set; }
         public string SettingValue { get; set; }
 
-        public Setting() {
+        public Setting()
+        {
         }
 
-        public Setting(string SettingName, string SettingValue) {
+        public Setting(string SettingName, string SettingValue)
+        {
             this.SettingName = SettingName;
             this.SettingValue = SettingValue;
         }
     }
 
-    public class Settings {
+    public class Settings
+    {
         private List<Setting> _settingsList = new List<Setting>();
 
-        public Settings() {
+        public Settings()
+        {
         }
 
-        public void SaveSettings() {
+        public void SaveSettings()
+        {
             if (_settingsList.Count == 0) return;
 
-            using (StreamWriter sw = new StreamWriter("settings.txt")) {
-                foreach (Setting s in _settingsList) {
+            using (StreamWriter sw = new StreamWriter("settings.txt"))
+            {
+                foreach (Setting s in _settingsList)
+                {
                     sw.WriteLine("{0}: {1}", s.SettingName.Trim(), s.SettingValue.Trim());
                 }
             }
         }
 
-        public bool LoadSettings() {
-            if (File.Exists("settings.txt")) {
-                using (StreamReader sr = new StreamReader("settings.txt")) {
-                    while (!sr.EndOfStream) {
+        public bool LoadSettings()
+        {
+            if (File.Exists("settings.txt"))
+            {
+                using (StreamReader sr = new StreamReader("settings.txt"))
+                {
+                    while (!sr.EndOfStream)
+                    {
                         string[] temp = sr.ReadLine().Split(':');
 
-                        Setting setting = new Setting {
+                        Setting setting = new Setting
+                        {
                             SettingName = temp[0].Trim(),
                             SettingValue = temp[1].Trim()
                         };
@@ -48,24 +62,29 @@ namespace TaskbarCustomizer.TaskSettings {
 
                     return true;
                 }
-            } else {
+            }
+            else
+            {
                 return false;
             }
         }
 
-        public void AddSetting(Setting Setting) {
+        public void AddSetting(Setting Setting)
+        {
             if (FindSetting(Setting.SettingName) == null)
                 _settingsList.Add(Setting);
         }
 
-        public void RemoveSetting(Setting Setting) {
+        public void RemoveSetting(Setting Setting)
+        {
             Setting setting = FindSetting(Setting.SettingName);
 
             if (setting != null)
                 _settingsList.Remove(Setting);
         }
 
-        public void UpdateSetting(Setting Setting) {
+        public void UpdateSetting(Setting Setting)
+        {
             int index = _settingsList.FindIndex(s => s.SettingName.ToLower() == Setting.SettingName.ToLower());
 
             if (index == -1) return;
@@ -73,7 +92,8 @@ namespace TaskbarCustomizer.TaskSettings {
             _settingsList[index] = Setting;
         }
 
-        public Setting FindSetting(string SettingName) {
+        public Setting FindSetting(string SettingName)
+        {
             return _settingsList.FirstOrDefault(s => s.SettingName.ToLower().Trim() == SettingName.ToLower().Trim());
         }
     }

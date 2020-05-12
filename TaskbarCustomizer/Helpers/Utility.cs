@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace TaskbarCustomizer.Helpers {
+namespace TaskbarCustomizer.Helpers
+{
 
-    public class Utility {
+    public class Utility
+    {
         public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType,
             IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
-        public enum ABM : uint {
+        public enum ABM : uint
+        {
             New = 0x00000000,
             Remove = 0x00000001,
             QueryPos = 0x00000002,
@@ -23,14 +26,16 @@ namespace TaskbarCustomizer.Helpers {
 
         public const int WM_SIZE = 0x0005;
 
-        public enum ABE : uint {
+        public enum ABE : uint
+        {
             Left = 0,
             Top = 1,
             Right = 2,
             Bottom = 3
         }
 
-        public static class ABS {
+        public static class ABS
+        {
             public const int Autohide = 0x0000001;
             public const int AlwaysOnTop = 0x0000002;
         }
@@ -100,7 +105,8 @@ namespace TaskbarCustomizer.Helpers {
         public const uint WM_STYLECHANGED = 0x007D;
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct RECT {
+        public struct RECT
+        {
             public int Left;        // x position of upper-left corner
             public int Top;         // y position of upper-left corner
             public int Right;       // x position of lower-right corner
@@ -108,7 +114,8 @@ namespace TaskbarCustomizer.Helpers {
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct APPBARDATA {
+        public struct APPBARDATA
+        {
             public uint cbSize;
             public IntPtr hWnd;
             public uint uCallbackMessage;
@@ -118,13 +125,15 @@ namespace TaskbarCustomizer.Helpers {
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct WindowCompositionAttributeData {
+        public struct WindowCompositionAttributeData
+        {
             public WindowCompositionAttribute Attribute;
             public IntPtr Data;
             public int SizeOfData;
         }
 
-        public enum WindowCompositionAttribute {
+        public enum WindowCompositionAttribute
+        {
 
             // ...
             WCA_ACCENT_POLICY = 19
@@ -132,7 +141,8 @@ namespace TaskbarCustomizer.Helpers {
             // ...
         }
 
-        public enum AccentState {
+        public enum AccentState
+        {
             ACCENT_DISABLED = 0,
             ACCENT_ENABLE_GRADIENT = 1,
             ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
@@ -141,20 +151,24 @@ namespace TaskbarCustomizer.Helpers {
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct AccentPolicy {
+        public struct AccentPolicy
+        {
             public AccentState AccentState;
             public int AccentFlags;
             public int GradientColor;
             public int AnimationId;
         }
 
-        public static IntPtr FindWindowByIndex(IntPtr hWndParent, string className, int index) {
+        public static IntPtr FindWindowByIndex(IntPtr hWndParent, string className, int index)
+        {
             if (index == 0)
                 return hWndParent;
-            else {
+            else
+            {
                 int ct = 0;
                 IntPtr result = IntPtr.Zero;
-                do {
+                do
+                {
                     result = Utility.FindWindowEx(hWndParent, result, className, null);
                     if (result != IntPtr.Zero)
                         ++ct;

@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="TaskbarCustomizer Settings" Height="400" Width="525" 
+        Icon="pack://siteoforigin:,,,/Resources/icon.ico"
         WindowState="Normal" WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen" 
         Loaded="Window_Loaded" Closing="Window_Closing" StateChanged="Window_StateChanged">
@@ -15,46 +16,29 @@
             <RowDefinition Height="32" />
         </Grid.RowDefinitions>
         <TabControl TabStripPlacement="Left" Grid.Row="0" Margin="0 5">
-            <TabControl.Resources>
-                <Style TargetType="{x:Type TabItem}">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type TabItem}">
-                                <ContentPresenter 
-                                        ContentSource="Header"
-                                        MinWidth="120"
-                                        RecognizesAccessKey="True">
-                                </ContentPresenter>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="FontWeight" Value="Bold" />
-                                    </Trigger>
-                                    <Trigger Property="IsMouseOver" Value="true">
-                                        <Setter Property="FontWeight" Value="Bold" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </TabControl.Resources>
             <TabItem Header="Settings">
                 <ScrollViewer>
                     <StackPanel x:Name="ParentPanel" Margin="5">
                         <Expander IsExpanded="True">
                             <Expander.Header>
-                                <TextBlock Text="Dummy Taskbar Settings" FontSize="16" />
+                                <TextBlock Text="Dummy Taskbar Settings" FontSize="16" FontWeight="Bold" />
                             </Expander.Header>
                             <StackPanel Margin="25 0 0 0">
                                 <Label Content="Width:" />
                                 <Slider x:Name="SliderTaskWidth" Minimum="600" Maximum="800" Width="{Binding Path=ActualWidth, ElementName=ParentPanel}" ValueChanged="SliderTaskWidth_ValueChanged" />
+                                <Label Content="Red:" />
+                                <Slider x:Name="SliderDummyTaskRed" Minimum="0" Maximum="255" Width="{Binding Path=ActualWidth, ElementName=ParentPanel}" ValueChanged="SliderDummyTaskRed_ValueChanged" />
+                                <Label Content="Green:" />
+                                <Slider x:Name="SliderDummyTaskGreen" Minimum="0" Maximum="255" Width="{Binding Path=ActualWidth, ElementName=ParentPanel}" ValueChanged="SliderDummyTaskGreen_ValueChanged" />
+                                <Label Content="Blue:" />
+                                <Slider x:Name="SliderDummyTaskBlue" Minimum="0" Maximum="255" Width="{Binding Path=ActualWidth, ElementName=ParentPanel}" ValueChanged="SliderDummyTaskBlue_ValueChanged" />
                                 <Label Content="Opacity:" />
-                                <Slider x:Name="SliderTaskOpacity" Minimum="0" Maximum="255" Width="{Binding Path=ActualWidth, ElementName=ParentPanel}" ValueChanged="SliderTaskOpacity_ValueChanged" />
+                                <Slider x:Name="SliderDummyTaskOpacity" Minimum="0" Maximum="255" Width="{Binding Path=ActualWidth, ElementName=ParentPanel}" ValueChanged="SliderDummyTaskOpacity_ValueChanged" />
                             </StackPanel>
                         </Expander>
                         <Expander IsExpanded="True">
                             <Expander.Header>
-                                <TextBlock Text="Show/Hide Elements" FontSize="16" />
+                                <TextBlock Text="Show/Hide Elements" FontSize="16" FontWeight="Bold" />
                             </Expander.Header>
                             <StackPanel Margin="25 0 0 0">
                                 <CheckBox x:Name="CheckTaskbarVisible" Content="Show Taskbar" Click="CheckTaskbarVisible_Click" />
@@ -64,7 +48,7 @@
                         </Expander>
                         <Expander IsExpanded="True">
                             <Expander.Header>
-                                <TextBlock Text="Other" FontSize="16" />
+                                <TextBlock Text="Other" FontSize="16" FontWeight="Bold" />
                             </Expander.Header>
                             <StackPanel Margin="25 0 0 0">
                                 <CheckBox x:Name="CheckAutoStart" Content="Auto Start" />
