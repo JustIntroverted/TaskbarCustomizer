@@ -377,9 +377,6 @@ namespace TaskbarCustomizer {
                 _running = false;
                 ButtonStart.Content = "Start";
             }
-
-            //ButtonStart.Visibility = Visibility.Hidden;
-            //ButtonStop.Visibility = Visibility.Visible;
         }
 
         #endregion control events

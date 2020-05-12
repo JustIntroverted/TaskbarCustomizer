@@ -3,31 +3,81 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TaskbarCustomizer"
         mc:Ignorable="d"
-        Title="TaskbarCustomizer Settings" Height="400" Width="525" WindowState="Normal" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closing="Window_Closing" StateChanged="Window_StateChanged">
-    <Grid>
-        <TabControl>
-            <TabItem Header="Options">
-                <StackPanel>
-                    <Label Content="Dummy Taskbar Settings" FontWeight="Bold" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <Label Content="Width:" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <Slider x:Name="SliderTaskWidth" Width="500" HorizontalAlignment="Left" Minimum="600" Maximum="800" VerticalAlignment="Top" ValueChanged="SliderTaskWidth_ValueChanged" />
-                    <Label Content="Opacity:" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <Slider x:Name="SliderTaskOpacity" Width="500" HorizontalAlignment="Left" Minimum="0" Maximum="255" VerticalAlignment="Top" ValueChanged="SliderTaskOpacity_ValueChanged" />
-                    <Label Content="Show/Hide Elements" FontWeight="Bold" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <CheckBox x:Name="CheckTaskbarVisible" Content="Show Taskbar" HorizontalAlignment="Left" VerticalAlignment="Top" Click="CheckTaskbarVisible_Click" />
-                    <CheckBox x:Name="CheckHideStart" Content="Hide Start" HorizontalAlignment="Left" VerticalAlignment="Top" Height="17" Width="145" Checked="CheckHideStart_Checked" Unchecked="CheckHideStart_Unchecked" />
-                    <CheckBox x:Name="CheckHideShowDesk" Content="Hide Show Desktop" HorizontalAlignment="Left" VerticalAlignment="Top" Height="17" Width="145" Checked="CheckHideShowDesk_Checked" Unchecked="CheckHideShowDesk_Unchecked" />
-                    <Label Content="Other" FontWeight="Bold" FontSize="16" Height="31" VerticalAlignment="Top" />
-                    <CheckBox x:Name="CheckAutoStart" Content="Auto Start" VerticalAlignment="Top" Height="17" />
-                    <CheckBox x:Name="CheckLaunchWithWindows" Content="Launch With Windows" Height="17" VerticalAlignment="Top" Checked="CheckLaunchWithWindows_Checked" Unchecked="CheckLaunchWithWindows_Unchecked" />
-                    <Button x:Name="ButtonStart" Content="Start" Click="ButtonStart_Click" />
-                </StackPanel>
+        Title="TaskbarCustomizer Settings" Height="400" Width="525" 
+        WindowState="Normal" WindowStyle="SingleBorderWindow"
+        WindowStartupLocation="CenterScreen" 
+        Loaded="Window_Loaded" Closing="Window_Closing" StateChanged="Window_StateChanged">
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="32" />
+        </Grid.RowDefinitions>
+        <TabControl TabStripPlacement="Left" Grid.Row="0" Margin="0 5">
+            <TabControl.Resources>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type TabItem}">
+                                <ContentPresenter 
+                                        ContentSource="Header"
+                                        MinWidth="120"
+                                        RecognizesAccessKey="True">
+                                </ContentPresenter>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="true">
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+            <TabItem Header="Settings">
+                <ScrollViewer>
+                    <StackPanel x:Name="ParentPanel" Margin="5">
+                        <Expander IsExpanded="True">
+                            <Expander.Header>
+                                <TextBlock Text="Dummy Taskbar Settings" FontSize="16" />
+                            </Expander.Header>
+                            <StackPanel Margin="25 0 0 0">
+                                <Label Content="Width:" />
+                                <Slider x:Name="SliderTaskWidth" Minimum="600" Maximum="800" Width="{Binding Path=ActualWidth, ElementName=ParentPanel}" ValueChanged="SliderTaskWidth_ValueChanged" />
+                                <Label Content="Opacity:" />
+                                <Slider x:Name="SliderTaskOpacity" Minimum="0" Maximum="255" Width="{Binding Path=ActualWidth, ElementName=ParentPanel}" ValueChanged="SliderTaskOpacity_ValueChanged" />
+                            </StackPanel>
+                        </Expander>
+                        <Expander IsExpanded="True">
+                            <Expander.Header>
+                                <TextBlock Text="Show/Hide Elements" FontSize="16" />
+                            </Expander.Header>
+                            <StackPanel Margin="25 0 0 0">
+                                <CheckBox x:Name="CheckTaskbarVisible" Content="Show Taskbar" Click="CheckTaskbarVisible_Click" />
+                                <CheckBox x:Name="CheckHideStart" Content="Hide Start" Checked="CheckHideStart_Checked" Unchecked="CheckHideStart_Unchecked" />
+                                <CheckBox x:Name="CheckHideShowDesk" Content="Hide Show Desktop" Checked="CheckHideShowDesk_Checked" Unchecked="CheckHideShowDesk_Unchecked" />
+                            </StackPanel>
+                        </Expander>
+                        <Expander IsExpanded="True">
+                            <Expander.Header>
+                                <TextBlock Text="Other" FontSize="16" />
+                            </Expander.Header>
+                            <StackPanel Margin="25 0 0 0">
+                                <CheckBox x:Name="CheckAutoStart" Content="Auto Start" />
+                                <CheckBox x:Name="CheckLaunchWithWindows" Content="Launch With Windows" Checked="CheckLaunchWithWindows_Checked" Unchecked="CheckLaunchWithWindows_Unchecked" />
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
-            <TabItem Header="Advanced Options">
-                
+            <TabItem Header="Advanced Settings">
+
             </TabItem>
         </TabControl>
+        <Button x:Name="ButtonStart" FontSize="18" Content="Start" Click="ButtonStart_Click" Grid.Row="1" />
     </Grid>
 </Window>
